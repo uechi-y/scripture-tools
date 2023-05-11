@@ -1,3 +1,3 @@
 [submodule "lds-scriptures"]
-	path = lds-scriptures
+	path = transformer/lds-scriptures
 	url = https://github.com/beandog/lds-scriptures
