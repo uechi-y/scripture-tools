@@ -7,8 +7,8 @@ const context = await esbuild.context({
     entryPoints: ["src/main.ts"],
     outfile: "dist/main.js",
     bundle: true,
-    format: "cjs",
-    target: "es2018",
+    format: "esm",
+    target: "es2022",
     treeShaking: true,
 });
 

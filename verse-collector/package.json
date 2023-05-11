@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Crawl and locally store scriptures from the official LDS website",
   "main": "dist/index.js",
+  "type": "module",
   "scripts": {
     "dev": "tsx watch src/main.ts",
     "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production"
