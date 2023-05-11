@@ -130,11 +130,23 @@ fn main() {
 
     let verses = {
         let json_string = std::fs::read_to_string(PATH_TO_SCRIPTURE_JSON).unwrap();
-        serde_json::from_str::<Vec<Verse>>(&json_string).unwrap()
+        serde_json::from_str::<Vec<Verse>>(&json_string)
+            .unwrap()
+            .into_iter()
+            .map(|verse| {
+                if verse.book_title.contains("--") {
+                    Verse {
+                        book_title: verse.book_title.replace("--", " "),
+                        ..verse
+                    }
+                } else {
+                    verse
+                }
+            })
+            .collect()
     };
     let chapters = group_by_chapter_number(verses);
     let books = group_by_book_title(chapters);
-
     // make a directory to the path of PATH_TO_OUTPUT_DIR
     std::fs::create_dir_all(PATH_TO_OUTPUT_DIR).unwrap();
 
