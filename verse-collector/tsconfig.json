@@ -1,0 +1,11 @@
+{
+    "extends": "@tsconfig/node18/tsconfig.json",
+    "compilerOptions": {
+        "baseUrl": "src",
+        "noImplicitAny": true,
+	    "strictNullChecks": true,
+        "module": "ES2022",
+        "target": "ES2022",
+        "lib": ["ES2022", "DOM"]
+    }
+}
