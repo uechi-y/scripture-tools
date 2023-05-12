@@ -1,12 +1,12 @@
 // this file exports mnemonics used in URLs of the church website.
 
-export type Volume = {
+export type VolumeDescription = {
     name: string;
     books: string[];
 };
 
 // https://www.churchofjesuschrist.org/study/scriptures/bofm/<name>/<chapter>?lang=<lang>
-export const BOOK_OF_MORMON: Volume = {
+export const BOOK_OF_MORMON: VolumeDescription = {
     name: "bofm",
     books: [
         "1-ne",
@@ -28,19 +28,19 @@ export const BOOK_OF_MORMON: Volume = {
 };
 
 // https://www.churchofjesuschrist.org/study/scriptures/dc-testament/dc/<chapter>?lang=<lang>
-export const DOCTRINE_AND_COVENANTS: Volume = {
+export const DOCTRINE_AND_COVENANTS: VolumeDescription = {
     name: "dc-testament",
     books: ["dc"],
 };
 
 // https://www.churchofjesuschrist.org/study/scriptures/pgp/<book>/1?lang=kor
-export const PEARL_OF_GREAT_PRICE: Volume = {
+export const PEARL_OF_GREAT_PRICE: VolumeDescription = {
     name: "pgp",
     books: ["moses", "abr", "js-m", "js-h", "a-of-f"],
 };
 
 // https://www.churchofjesuschrist.org/study/scriptures/nt/<book./<chapter>?lang=<lang>
-export const NEW_TESTAMENT: Volume = {
+export const NEW_TESTAMENT: VolumeDescription = {
     name: "nt",
     books: [
         "matt",
@@ -74,7 +74,7 @@ export const NEW_TESTAMENT: Volume = {
 };
 
 // https://www.churchofjesuschrist.org/study/scriptures/ot/<book>/<chapter>?lang=<lang>
-export const OLD_TESTAMENT: Volume = {
+export const OLD_TESTAMENT: VolumeDescription = {
     name: "ot",
     books: [
         "gen",

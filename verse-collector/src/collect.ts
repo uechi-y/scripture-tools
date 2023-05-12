@@ -47,7 +47,7 @@ type CollectOptions = {
 //     lang: "eng"
 // } satisfies CollectOptions;
 
-export default async function collect(url: string) {
+export default async function collect(url: string): Promise<string[]> {
     const html = await fetchURL(url);
 
     const $ = cheerio.load(html);
@@ -66,5 +66,5 @@ export default async function collect(url: string) {
         })
         .toArray();
 
-    console.log(`Crawled ${verses.length} verses from ${url}`);
+    return verses;
 }
