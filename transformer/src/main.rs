@@ -1,7 +1,11 @@
 use std::collections::HashMap;
 
-use clap::{Parser,ValueEnum};
-use scripture_tools::{types::{Verse, Book}, group::{group_by_chapter_number, group_by_book_title}};
+use clap::{Parser, ValueEnum};
+use scripture_tools::{
+    group::{group_by_book_title, group_by_chapter_number},
+    mapping::OFFICIAL_ABBREV_MAPPING,
+    types::{Book, Verse},
+};
 
 const PATH_TO_SCRIPTURE_JSON: &'static str = "./lds-scriptures/json/lds-scriptures-json.txt";
 const PATH_TO_OUTPUT_DIR: &'static str = "./output";
@@ -41,10 +45,25 @@ fn fetch_verses() -> Vec<Verse> {
 // this file tells you how many verses there are in each chapter
 // ex> { "Helaman":[34,14,37,26,52,41,29,28,41,19,38,26,39,31,17,25], ... }
 fn emit_verse_count(books: Vec<Book>) {
-    let books = books.into_iter().map(|book| {
-        let verses = book.chapters.into_iter().map(|chapter| chapter.verses.len() as u16).collect::<Vec<u16>>();
-        (book.book_title, verses)
-    }).collect::<HashMap<_, _>>();
+    let books = books
+        .into_iter()
+        .map(|book| {
+            let verses = book
+                .chapters
+                .into_iter()
+                .map(|chapter| chapter.verses.len() as u16)
+                .collect::<Vec<u16>>();
+            let title = OFFICIAL_ABBREV_MAPPING
+                .get(&book.book_title)
+                .unwrap_or_else(|| {
+                    panic!(
+                        "Book title {} not found in abbreviation mapping",
+                        book.book_title
+                    )
+                });
+            (*title, verses)
+        })
+        .collect::<HashMap<_, _>>();
 
     let verses_path = format!("{}/verse-count.json", PATH_TO_OUTPUT_DIR);
     std::fs::write(&verses_path, serde_json::to_string(&books).unwrap()).unwrap();
@@ -62,8 +81,6 @@ fn emit_all_verses(books: Vec<Book>) {
 }
 
 fn main() {
-    let args = Args::parse();
-
     // check if files exists in PATH_TO_SCRIPTURE_JSON
     if !std::path::Path::new(PATH_TO_SCRIPTURE_JSON).exists() {
         panic!("Scripture file not found on {}. If you haven't downloaded submodules, run 'git submodule update --init'", PATH_TO_SCRIPTURE_JSON);
@@ -76,6 +93,7 @@ fn main() {
     // make a directory to the path of PATH_TO_OUTPUT_DIR
     std::fs::create_dir_all(PATH_TO_OUTPUT_DIR).unwrap();
 
+    let args = Args::parse();
     match args.output_type {
         OutputType::AllVerses => emit_all_verses(books),
         OutputType::VerseCount => emit_verse_count(books),
