@@ -1,9 +1,23 @@
 use std::collections::HashMap;
 
+use clap::{Parser,ValueEnum};
 use scripture_tools::{types::{Verse, Book}, group::{group_by_chapter_number, group_by_book_title}};
 
 const PATH_TO_SCRIPTURE_JSON: &'static str = "./lds-scriptures/json/lds-scriptures-json.txt";
 const PATH_TO_OUTPUT_DIR: &'static str = "./output";
+
+#[derive(ValueEnum, Clone, Debug)]
+enum OutputType {
+    VerseCount,
+    AllVerses,
+}
+
+#[derive(Parser, Debug)]
+struct Args {
+    /// specify which artifact you want to see
+    #[clap(value_enum, default_value_t=OutputType::AllVerses)]
+    output_type: OutputType,
+}
 
 fn fetch_verses() -> Vec<Verse> {
     let json_string = std::fs::read_to_string(PATH_TO_SCRIPTURE_JSON).unwrap();
@@ -48,6 +62,8 @@ fn emit_all_verses(books: Vec<Book>) {
 }
 
 fn main() {
+    let args = Args::parse();
+
     // check if files exists in PATH_TO_SCRIPTURE_JSON
     if !std::path::Path::new(PATH_TO_SCRIPTURE_JSON).exists() {
         panic!("Scripture file not found on {}. If you haven't downloaded submodules, run 'git submodule update --init'", PATH_TO_SCRIPTURE_JSON);
@@ -60,5 +76,8 @@ fn main() {
     // make a directory to the path of PATH_TO_OUTPUT_DIR
     std::fs::create_dir_all(PATH_TO_OUTPUT_DIR).unwrap();
 
-    emit_verse_count(books);
+    match args.output_type {
+        OutputType::AllVerses => emit_all_verses(books),
+        OutputType::VerseCount => emit_verse_count(books),
+    }
 }
