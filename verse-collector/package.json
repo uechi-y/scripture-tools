@@ -4,7 +4,7 @@
   "description": "Crawl and locally store scriptures from the official LDS website",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "tsx watch src/main.ts",
+    "dev": "NODE_ENV=development tsx watch src/main.ts",
     "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production"
   },
   "repository": "https://github.com/pacokwon/scripture-tools",

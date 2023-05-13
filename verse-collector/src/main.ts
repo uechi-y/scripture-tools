@@ -10,7 +10,7 @@ import { Book, Chapter, Volume, CollectOptions } from "types";
 import { BOOK_ABBREV_TO_FULL, VOLUME_ABBREV_TO_FULL } from "./mapping";
 import { AVAILABLE_LANGUAGES } from "lang";
 
-const OUTPUT_DIR = "../output";
+const OUTPUT_DIR = process.env.NODE_ENV === "development" ? "../output" : "./output";
 
 async function collectBook(
     volume: string,
@@ -69,8 +69,15 @@ async function collectVolume(
     };
 }
 
+function getOutputDir(dir?: string) {
+    if (dir === undefined)
+        return path.resolve(__dirname, OUTPUT_DIR);
+
+    return dir;
+}
+
 async function main() {
-    const { lang } = yargs(process.argv.slice(2))
+    const { lang, outputDir } = yargs(process.argv.slice(2))
         .option("lang", {
             alias: "l",
             choices: AVAILABLE_LANGUAGES,
@@ -78,17 +85,22 @@ async function main() {
             demandOption: true,
             type: "string",
         })
+        .option("output-dir", {
+            alias: "o",
+            describe: "Path to output scripture files. Default: ./output/<lang>",
+            type: "string",
+        })
         .parseSync();
 
-    const outputDir = path.resolve(__dirname, OUTPUT_DIR, lang);
+    const odir = path.resolve(getOutputDir(outputDir), lang);
 
-    if (!existsSync(outputDir)) mkdirSync(outputDir, { recursive: true });
+    if (!existsSync(odir)) mkdirSync(odir, { recursive: true });
 
     const volume = await collectVolume(BOOK_OF_MORMON, { lang });
     await Promise.all(
         volume.books.map(async (book) => {
             const stringified = JSON.stringify(book);
-            const filepath = path.resolve(outputDir, book.book_title) + ".json";
+            const filepath = path.resolve(odir, book.book_title) + ".json";
             await fs.writeFile(filepath, stringified);
         })
     );
