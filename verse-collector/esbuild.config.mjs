@@ -7,6 +7,7 @@ const context = await esbuild.context({
     entryPoints: ["src/main.ts"],
     outfile: "dist/main.js",
     bundle: true,
+    platform: "node",
     format: "esm",
     target: "es2022",
     treeShaking: true,
