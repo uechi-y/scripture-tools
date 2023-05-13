@@ -5,7 +5,7 @@ const prod = (process.argv[2] === "production");
 
 const context = await esbuild.context({
     entryPoints: ["src/main.ts"],
-    outfile: "dist/main.js",
+    outfile: "main.js",
     bundle: true,
     platform: "node",
     format: "cjs",
