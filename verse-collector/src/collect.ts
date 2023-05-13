@@ -2,9 +2,8 @@ import { existsSync, mkdirSync } from "fs";
 import { readFile, writeFile } from "fs/promises";
 import { resolve } from "path";
 import * as cheerio from "cheerio";
-import { __dirname } from "./lib";
 
-const CACHE_DIRECTORY = ".cache";
+const CACHE_DIRECTORY = "../.cache";
 
 function urlToFilename(url: string): string {
     return (
@@ -38,14 +37,6 @@ async function fetchURL(url: string): Promise<string> {
 
     return html;
 }
-
-type CollectOptions = {
-    lang: "kor" | "eng";
-};
-
-// const defaultOptions = {
-//     lang: "eng"
-// } satisfies CollectOptions;
 
 export default async function collect(url: string): Promise<string[]> {
     const html = await fetchURL(url);

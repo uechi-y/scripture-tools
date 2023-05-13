@@ -8,7 +8,7 @@ const context = await esbuild.context({
     outfile: "dist/main.js",
     bundle: true,
     platform: "node",
-    format: "esm",
+    format: "cjs",
     target: "es2022",
     treeShaking: true,
 });

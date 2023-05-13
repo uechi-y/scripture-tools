@@ -7,9 +7,8 @@ import { BOOK_OF_MORMON, VolumeDescription } from "./volumes";
 import VERSE_COUNT from "./data/verse-count";
 import { Book, Chapter, Volume } from "types";
 import { BOOK_ABBREV_TO_FULL, VOLUME_ABBREV_TO_FULL } from "./mapping";
-import { __dirname } from "./lib";
 
-const OUTPUT_DIR = "./output";
+const OUTPUT_DIR = "../output";
 
 async function collectBook(volume: string, book: string): Promise<Book> {
     const chaptersCount = VERSE_COUNT[book].length;
@@ -59,7 +58,6 @@ async function collectVolume(volume: VolumeDescription): Promise<Volume> {
     };
 }
 
-const outputDir = path.resolve(__dirname, OUTPUT_DIR);
 
 if (!existsSync(outputDir))
     mkdirSync(outputDir);
