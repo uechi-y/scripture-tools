@@ -1,3 +1,5 @@
+import { AvailableLanguage } from "lang";
+
 export type Volume = {
     name: string;
     books: Book[];
@@ -23,3 +25,7 @@ export type Verse = {
     verse_number: number;
     scripture_text: string;
 };
+
+export type CollectOptions = {
+    lang: AvailableLanguage;
+}
