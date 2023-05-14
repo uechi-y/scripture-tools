@@ -3,7 +3,8 @@ import { readFile, writeFile } from "fs/promises";
 import { resolve } from "path";
 import * as cheerio from "cheerio";
 
-const CACHE_DIRECTORY = "../.cache";
+const CACHE_DIRECTORY =
+    process.env.NODE_ENV === "development" ? "../.cache" : "./.cache";
 
 function urlToFilename(url: string): string {
     return (
@@ -15,8 +16,9 @@ function urlToFilename(url: string): string {
 }
 
 // fetch html from web (or cache if it exists) and return the html string
-async function fetchURL(url: string): Promise<string> {
-    const cachePath = resolve(__dirname, CACHE_DIRECTORY);
+async function fetchURL(volume: string, book: string, chapter: number, lang: string): Promise<string> {
+    const url = `https://www.churchofjesuschrist.org/study/scriptures/${volume}/${book}/${chapter}?lang=${lang}`;
+    const cachePath = resolve(__dirname, CACHE_DIRECTORY, lang);
 
     // if cache directory exists, create it
     if (!existsSync(cachePath)) mkdirSync(CACHE_DIRECTORY, { recursive: true });
@@ -32,14 +34,13 @@ async function fetchURL(url: string): Promise<string> {
         return await readFile(htmlCachePath, { encoding: "utf8" });
 
     const html = await fetch(url).then((res) => res.text());
-    if (html)
-        await writeFile(htmlCachePath, html, { encoding: "utf8" });
+    if (html) await writeFile(htmlCachePath, html, { encoding: "utf8" });
 
     return html;
 }
 
-export default async function collect(url: string): Promise<string[]> {
-    const html = await fetchURL(url);
+export default async function collect(volume: string, book: string, chapter: number, lang: string): Promise<string[]> {
+    const html = await fetchURL(volume, book, chapter, lang);
 
     const $ = cheerio.load(html);
 
